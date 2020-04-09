@@ -1,6 +1,7 @@
 import pandas
 
-filepath = "sherbrooke042020.csv"
+filepath = "abitibi_climat.csv"
 
 csv = pandas.read_csv(filepath)
 
+print(csv.head())
