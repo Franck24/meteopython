@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt, pandas as pd
 
 #Variable contenant le chemin vers les fichiers .csv contenant les données climatiques
 filepath1 = "sherbrooke_1930.csv"
-filepath2 = "sherbrooke_1970.csv"
+filepath2 = "1970.csv"
 
 fields = ["Date/Heure", "Temp max.(°C)", "Temp min.(°C)", "Temp moy.(°C)", "Pluie tot. (mm)", "Neige tot. (cm)"]
 #On lis les fichiers .csv à l'aide de la librairie pandas
@@ -16,10 +16,15 @@ latercsv = pd.read_csv(filepath2, usecols=fields)
 Total = latercsv["Pluie tot. (mm)"].sum()
 
 
-print(Total)
+print(latercsv)
 
-x=latercsv["Temp moy.(°C)"]
-y=latercsv["Neige tot. (cm)"]
+x=latercsv["Neige tot. (cm)"]
+y=latercsv["Temp moy.(°C)"]
+
 
 plt.plot(x,y)
-plt.xlabel('Température')
+plt.xlabel("Total neige")
+plt.ylabel("Température")
+plt.title("Gros graphique")
+
+#plt.show()
