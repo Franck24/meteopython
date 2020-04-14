@@ -1,4 +1,4 @@
-import pandas as pd
+import matplotlib.pyplot as plt, pandas as pd
 
 #Variable contenant le chemin vers les fichiers .csv contenant les données climatiques
 filepath1 = "sherbrooke_1930.csv"
@@ -11,7 +11,15 @@ earlycsv = pd.read_csv(filepath1, usecols=fields)
 latercsv = pd.read_csv(filepath2, usecols=fields)
 
 
-print(earlycsv.head())
+#print(earlycsv.head())
+
+Total = latercsv["Pluie tot. (mm)"].sum()
 
 
+print(Total)
 
+x=latercsv["Temp moy.(°C)"]
+y=latercsv["Neige tot. (cm)"]
+
+plt.plot(x,y)
+plt.xlabel('Température')
