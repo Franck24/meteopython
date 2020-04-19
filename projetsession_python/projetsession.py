@@ -1,20 +1,46 @@
 #Importation des modules nécessaire au fonctionnement du programme
-import matplotlib.pyplot as plt, pandas as pd, os, sys
+import matplotlib.pyplot as plt, pandas as pd, os, sys, tkinter
+from tkinter.filedialog import askopenfilename
 
 
-#Variable contenant le chemin vers le fichier .csv contenant les données climatiques
-filepath = "historique_sherbrooke.csv"
+#Variable contenant le chemin par défaut vers le fichier .csv contenant les données climatiques
+filepath = "../historique_sherbrooke.csv"
+
 
 #Variable qui sert à spécifier les champs du fichier qu'on veut lire uniquement
 fields = ["Date/Heure","Mois", "Temp max.(°C)", "Temp min.(°C)", "Temp moy.(°C)", "Pluie tot. (mm)", "Neige tot. (cm)"]
 
-#On lis les fichiers .csv à l'aide de la librairie pandas
-csv = pd.read_csv(filepath, usecols=fields)
 
-#On supprime toutes les rangées qui contient des mois en dehors de la saison d'hiver. On conserve Janvier, Février, Mars et Décembre
-csv = csv.drop(csv[(csv.Mois == 4) | (csv.Mois == 5) | (csv.Mois == 6)| (csv.Mois == 7)| (csv.Mois == 8) | (csv.Mois == 9) | (csv.Mois == 10) | (csv.Mois == 11)].index)
+#Fonction qui vérifie si l'emplacement et le fichier est valide
+def validatefile(filepath):
 
+    validfile = False
+    
+    while validfile !=True:
+        stop = False
+        try:
+            csv = pd.read_csv(filepath, usecols=fields) #Le chemin du fichier est valide, on retourne le fichier
+            return csv
+        except FileNotFoundError:
+            print("Fichier introuvable. Chercher manuellement le fichier historique_sherbrooke.csv")
+            filepath = browsefile()
+            validfile = False #On refait la boucle pour tester à nouveau le chemin
+        except ValueError:  #L'utilisateur n'a pas ouvert le bon fichier, on lui demande d'ouvrir à nouveau le fichier ou de quitter
+            userchoice = input("Vous n'avez pas ouvert le bon fichier. Entrez 1 pour réessayer ou q pour quitter\n>")
+            while stop == False:
+                if userchoice.lower() == "q": 
+                    sys.exit("Au revoir!") 
+                elif userchoice == "1":   
+                    filepath = browsefile()
+                    validfile = False
+                    stop=True
 
+#Fonction permettant à l'utilisateur d'aller chercher le fichier manuellement sur son ordinateur
+def browsefile():
+    tkwindow = tkinter.Tk() #Assigne la fenêtre à une variable
+    filepath = askopenfilename() #Ouvre un explorateur de fichier pour sélectionner le fichier
+    tkwindow.destroy()  #On détruit la fenêtre, sinon une fenêtre blanche reste ouverte
+    return filepath
 
 #Fonction qui supprime le texte de la console ou terminal
 def clearconsole():
@@ -44,9 +70,12 @@ def print_plot(x, y, ylabel, title):
     plt.show()          #On affiche le graphique à l'utilisateur
 
 
+csv = validatefile(filepath) #On appel la fonction pour vérifier le chemin du fichier
 
 
-stop = False
+#On supprime toutes les rangées qui contient des mois en dehors de la saison d'hiver. On conserve Janvier, Février, Mars et Décembre
+
+csv = csv.drop(csv[(csv.Mois == 4) | (csv.Mois == 5) | (csv.Mois == 6)| (csv.Mois == 7)| (csv.Mois == 8) | (csv.Mois == 9) | (csv.Mois == 10) | (csv.Mois == 11)].index)
 
 #Variables contenant le nom des colonnes qui serviront aux calculs des moyennes
 temp_max = "Temp max.(°C)"
@@ -61,6 +90,8 @@ resultsRain = []
 x = []
 
 year = 1903
+
+stop = False
 
 for i in range(68):
 
