@@ -4,7 +4,7 @@ from tkinter.filedialog import askopenfilename
 
 
 #Variable contenant le chemin par défaut vers le fichier .csv contenant les données climatiques
-filepath = "../historique_sherbrooke.csv"
+filepath = "historique_sherbrooke.csv"
 
 
 #Variable qui sert à spécifier les champs du fichier qu'on veut lire uniquement
@@ -25,7 +25,7 @@ def validatefile(filepath):
             print("Fichier introuvable. Chercher manuellement le fichier historique_sherbrooke.csv")
             filepath = browsefile()
             validfile = False #On refait la boucle pour tester à nouveau le chemin
-        except ValueError:  #L'utilisateur n'a pas ouvert le bon fichier, on lui demande d'ouvrir à nouveau le fichier ou de quitter
+        except ValueError:    #L'utilisateur n'a pas ouvert le bon fichier, on lui demande d'ouvrir à nouveau le fichier ou de quitter
             userchoice = input("Vous n'avez pas ouvert le bon fichier. Entrez 1 pour réessayer ou q pour quitter\n>")
             while stop == False:
                 if userchoice.lower() == "q": 
@@ -35,15 +35,20 @@ def validatefile(filepath):
                     validfile = False
                     stop=True
 
+
 #Fonction permettant à l'utilisateur d'aller chercher le fichier manuellement sur son ordinateur
 def browsefile():
-    tkwindow = tkinter.Tk() #Assigne la fenêtre à une variable
+
+    tkwindow = tkinter.Tk()      #Assigne la fenêtre à une variable
     filepath = askopenfilename() #Ouvre un explorateur de fichier pour sélectionner le fichier
-    tkwindow.destroy()  #On détruit la fenêtre, sinon une fenêtre blanche reste ouverte
+    tkwindow.destroy()           #On détruit la variable contenant la fenêtre, sinon une fenêtre blanche reste ouverte
+
     return filepath
+
 
 #Fonction qui supprime le texte de la console ou terminal
 def clearconsole():
+
     if sys.platform.startswith('linux') or sys.platform.startswith('darwin') : #test si le système d'exploitation est Linux ou MacOS, si oui on supprime l'affichage
         os.system('clear') 
     elif sys.platform.startswith('win32'): #sinon on vérifie si le système d'exploitation est Windows, si oui on supprime l'affichage
@@ -56,7 +61,7 @@ def calculate_mean(csv, start_date,end_date, data):
     datayear = (csv['Date/Heure'] > start_date) & (csv['Date/Heure'] <= end_date)   #On prend les données entre deux années spécifiques
     cellsum = csv.loc[datayear].sum()  #On fait la somme des cellules 
     total = cellsum[data]       #On prend seulement la somme de la colonne spécifiées avec la variable "data"
-    mean = total/4            #On calcul la moyenne
+    mean = total/4              #On calcul la moyenne
     
     return mean
 
@@ -65,7 +70,7 @@ def calculate_mean(csv, start_date,end_date, data):
 def print_plot(x, y, ylabel, title):
    
    #Création du graphique à lignes brisées de base
-    plt.plot(x,y)      #Trace le graphique avec les variables en x (années) et en y (qté neige, pluie, température max)
+    plt.plot(x,y)       #Trace le graphique avec les variables en x (années) et en y (qté neige, pluie, température max)
     plt.xlabel("Année") #On attribut une étiquette à l'axe des x 
     plt.ylabel(ylabel)  #On attribut une étiquette à l'axe des y
     plt.title(title)    #On entre le titre du graphique
@@ -73,10 +78,9 @@ def print_plot(x, y, ylabel, title):
    #Calcul de la droite de tendance
     z = numpy.polyfit(x,y,1) #La fonction polyfit effectue le calcul des moindres carrés
     f = numpy.poly1d(z)
-    plt.plot(x,f(x),"r-") #Trace la droite de tendance en rouge ("r-")
+    plt.plot(x,f(x),"r-")    #Trace la droite de tendance en rouge ("r-")
 
-    plt.show()          #On affiche le graphique à l'utilisateur
-
+    plt.show()               #On affiche le graphique à l'utilisateur
 
 
 #On appel la fonction pour vérifier le chemin du fichier
@@ -99,7 +103,7 @@ resultsRain = []
 #Variable qui contiendra les années pour chaque moyennes
 x = []
 
-year = 1903
+year = 1903 #L'année où l'on commence les calculs
 
 stop = False
 
@@ -138,4 +142,3 @@ while stop == False :
         print_plot(x,resultsSnow, "Quantité de neige totale (cm)", "Quantité de neige moyenne tombée pendant la saison d'hiver\n à Sherbrooke pour la période de 1903 à 1970")
     elif userchoice == "3":
         print_plot(x,resultsRain, "Quantité de neige totale (mm)", "Quantité de pluie moyenne tombée pendant la saison d'hiver\n à Sherbrooke pour la période de 1903 à 1970")
-        
