@@ -1,5 +1,5 @@
-#Importation des modules nécessaire au fonctionnement du programme
-import matplotlib.pyplot as plt, pandas as pd, os, sys, tkinter
+#Importation des modules nécessaires au fonctionnement du programme
+import matplotlib.pyplot as plt, pandas as pd, os, sys, tkinter, numpy
 from tkinter.filedialog import askopenfilename
 
 
@@ -63,19 +63,29 @@ def calculate_mean(csv, start_date,end_date, data):
 
 #Fonction qui affiche les différents graphiques
 def print_plot(x, y, ylabel, title):
-    plt.plot(x, y)      #spécifie les variables en x (années) et en y (qté neige, pluie, température max)
+   
+   #Création du graphique à lignes brisées de base
+    plt.plot(x,y)      #Trace le graphique avec les variables en x (années) et en y (qté neige, pluie, température max)
     plt.xlabel("Année") #On attribut une étiquette à l'axe des x 
     plt.ylabel(ylabel)  #On attribut une étiquette à l'axe des y
     plt.title(title)    #On entre le titre du graphique
+
+   #Calcul de la droite de tendance
+    z = numpy.polyfit(x,y,1) #La fonction polyfit effectue le calcul des moindres carrés
+    f = numpy.poly1d(z)
+    plt.plot(x,f(x),"r-") #Trace la droite de tendance en rouge ("r-")
+
     plt.show()          #On affiche le graphique à l'utilisateur
 
 
-csv = validatefile(filepath) #On appel la fonction pour vérifier le chemin du fichier
+
+#On appel la fonction pour vérifier le chemin du fichier
+csv = validatefile(filepath) 
 
 
 #On supprime toutes les rangées qui contient des mois en dehors de la saison d'hiver. On conserve Janvier, Février, Mars et Décembre
-
-csv = csv.drop(csv[(csv.Mois == 4) | (csv.Mois == 5) | (csv.Mois == 6)| (csv.Mois == 7)| (csv.Mois == 8) | (csv.Mois == 9) | (csv.Mois == 10) | (csv.Mois == 11)].index)
+csv = csv.drop(csv[(csv.Mois == 4) | (csv.Mois == 5) | (csv.Mois == 6)|
+(csv.Mois == 7)| (csv.Mois == 8) | (csv.Mois == 9) | (csv.Mois == 10) | (csv.Mois == 11)].index)
 
 #Variables contenant le nom des colonnes qui serviront aux calculs des moyennes
 temp_max = "Temp max.(°C)"
@@ -123,12 +133,9 @@ while stop == False :
         stop = True
     #Sinon on affiche le graphique demandé par l'utilisateur 
     elif userchoice == "1":
-        print_plot(x,resultsTemp,"Température en °C", "Température moyenne maximale pendant la saison d'hiver à \n pour la période de 1903 à 1970")
+        print_plot(x,resultsTemp,"Température en °C", "Température moyenne maximale pendant la saison d'hiver\n à Sherbrooke pour la période de 1903 à 1970")
     elif userchoice == "2":
         print_plot(x,resultsSnow, "Quantité de neige totale (cm)", "Quantité de neige moyenne tombée pendant la saison d'hiver\n à Sherbrooke pour la période de 1903 à 1970")
     elif userchoice == "3":
         print_plot(x,resultsRain, "Quantité de neige totale (mm)", "Quantité de pluie moyenne tombée pendant la saison d'hiver\n à Sherbrooke pour la période de 1903 à 1970")
-
-
-
-
+        
