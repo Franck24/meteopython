@@ -4,14 +4,14 @@ from tkinter.filedialog import askopenfilename
 
 
 #Variable contenant le chemin par défaut vers le fichier .csv contenant les données climatiques
-filepath = "historique_sherbrooke.csv"
+filepath = "..historique_sherbrooke.csv"
 
 
 #Variable qui sert à spécifier les champs du fichier qu'on veut lire uniquement
 fields = ["Date/Heure","Mois", "Temp max.(°C)", "Temp min.(°C)", "Temp moy.(°C)", "Pluie tot. (mm)", "Neige tot. (cm)"]
 
 
-#Fonction qui vérifie si l'emplacement et le fichier est valide
+#Fonction qui vérifie si l'emplacement et le fichier sont valides
 def validatefile(filepath):
 
     validfile = False
@@ -22,10 +22,12 @@ def validatefile(filepath):
             csv = pd.read_csv(filepath, usecols=fields) #Le chemin du fichier est valide, on retourne le fichier
             return csv
         except FileNotFoundError:
+            clearconsole()
             print("Fichier introuvable. Chercher manuellement le fichier historique_sherbrooke.csv")
             filepath = browsefile()
             validfile = False #On refait la boucle pour tester à nouveau le chemin
         except ValueError:    #L'utilisateur n'a pas ouvert le bon fichier, on lui demande d'ouvrir à nouveau le fichier ou de quitter
+            clearconsole()
             userchoice = input("Vous n'avez pas ouvert le bon fichier. Entrez 1 pour réessayer ou q pour quitter\n>")
             while stop == False:
                 if userchoice.lower() == "q": 
@@ -70,7 +72,7 @@ def calculate_mean(csv, start_date,end_date, data):
 def print_plot(x, y, ylabel, title):
    
    #Création du graphique à lignes brisées de base
-    plt.plot(x,y)       #Trace le graphique avec les variables en x (années) et en y (qté neige, pluie, température max)
+    plt.plot(x,y)       #Trace le graphique avec les variables en x (années) et en y (température max, qté neige, qté pluie)
     plt.xlabel("Année") #On attribut une étiquette à l'axe des x 
     plt.ylabel(ylabel)  #On attribut une étiquette à l'axe des y
     plt.title(title)    #On entre le titre du graphique
@@ -81,6 +83,7 @@ def print_plot(x, y, ylabel, title):
     plt.plot(x,f(x),"r-")    #Trace la droite de tendance en rouge ("r-")
 
     plt.show()               #On affiche le graphique à l'utilisateur
+
 
 
 #On appel la fonction pour vérifier le chemin du fichier
