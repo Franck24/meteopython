@@ -4,7 +4,7 @@ from tkinter.filedialog import askopenfilename
 
 
 #Variable contenant le chemin par défaut vers le fichier .csv contenant les données climatiques
-filepath = "..historique_sherbrooke.csv"
+filepath = "historique_sherbrooke.csv"
 
 
 #Variable qui sert à spécifier les champs du fichier qu'on veut lire uniquement
